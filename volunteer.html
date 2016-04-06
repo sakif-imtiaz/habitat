@@ -1,0 +1,94 @@
+	<head>
+	  <title>volunteer</title>
+	</head>
+	<body>
+
+
+			<h1>Admin</h1>
+			<h2>Shifts</h2>
+			{{> shifts}}
+			<h2>Opportunities</h2>
+			{{> builds}}
+
+			
+		</body>
+
+			<template name="build_form">
+				<form>
+					<label>
+						Name
+						<input type="text" value="{{selectedBuild.name}}" name="buildName" />
+					</label>
+					<button id="build_submit">submit</button>
+				</form>
+			</template>
+
+			<template name="shifts">
+				<ul id="shifts">
+					{{#each shifts}}
+						<li class="shift {{selectedShiftClass}}">
+							name:  {{name}} <br/>
+							date:  {{date}} <br/>
+							time:  {{time}} <br/>
+							build: {{getBuildName build}} <br/>
+						</li>
+						<label>
+							<input type="checkbox" />
+							signup
+						</label>
+					{{/each}}
+				</ul>
+				selected shift: {{showSelectedShift.name}}
+				{{> shift_form}}
+			</template>
+
+			<template name="builds">
+				<ul id="builds">
+					{{#each builds}}
+						<li class="build {{selectedBuild}}">
+							{{name}}
+							&nbsp;|&nbsp;
+							<a href="#builds" class="remove">remove</a>
+						</li>
+					{{/each}}
+				</ul>
+
+				selected build: {{showSelectedBuild.name}}
+				{{> build_form}}
+			</template>
+
+
+			<template name="shift_form">
+				<form>
+					<label>
+						shift name
+						<input value="{{showSelectedShift.name}}" type="text" name="name" />
+					</label>
+
+					<label>
+						shift date
+						<input value="{{showSelectedShift.date}}" type="date" name="date" />
+					</label>
+
+					<label>
+						shift time
+						<input value="{{showSelectedShift.time}}" type="text" name="time" />
+					</label>
+
+					<label>
+						opportunities
+						<select name="build">
+						  <option >none</option>
+						  {{#each builds}}
+						  	{{#if showSelectedShift.buildID }}
+						  		<option value="{{_id}}" selected>{{name}}</option>
+						  	{{else }}
+						  		<option value="{{_id}}" >{{name}}</option>
+						  	{{/if }}
+						  {{/each}}
+						</select>
+					</label>
+
+					<button id="shift_submit">submit</button>
+				</form>
+			</template>

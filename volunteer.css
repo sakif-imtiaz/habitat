@@ -1,0 +1,4 @@
+/* CSS declarations go here */
+.selected-shift, .selected-build {
+	font-weight: 700;
+}
