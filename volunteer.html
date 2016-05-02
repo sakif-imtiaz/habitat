@@ -4,11 +4,6 @@
 	<body>
 
 
-			<h1>Admin</h1>
-			<h2>Shifts</h2>
-			{{> shifts}}
-			<h2>Opportunities</h2>
-			{{> builds}}
 
 			
 		</body>
@@ -24,22 +19,25 @@
 			</template>
 
 			<template name="shifts">
-				<ul id="shifts">
-					{{#each shifts}}
-						<li class="shift {{selectedShiftClass}}">
-							name:  {{name}} <br/>
-							date:  {{date}} <br/>
-							time:  {{time}} <br/>
-							build: {{getBuildName build}} <br/>
-						</li>
-						<label>
-							<input type="checkbox" />
-							signup
-						</label>
+				<div id="shifts">
+					{{#each shift_group in grouped_shifts}}
+						<h2>{{ shift_group.build }}</h2>
+						<div class="shift_group">
+							{{#each shift in shift_group.shifts }}
+								{{>shift_render shift selectedShiftClass }}
+							{{/each}}
+						</div>
 					{{/each}}
-				</ul>
-				selected shift: {{showSelectedShift.name}}
-				{{> shift_form}}
+				</div>
+			</template>
+
+
+
+			<template name="shift_render">
+				<div class="shift {{selectedShiftClass}}">
+					{{ name }} | {{ formatted_date }} | {{ time }}
+					<input type="checkbox" name="add_to_cart" class="add_to_cart" checked={{isInCart}}/>
+				</div>
 			</template>
 
 			<template name="builds">
@@ -67,7 +65,7 @@
 
 					<label>
 						shift date
-						<input value="{{showSelectedShift.date}}" type="date" name="date" />
+						<input value="{{showSelectedShiftDate}}" type="date" name="date" />
 					</label>
 
 					<label>
@@ -80,7 +78,7 @@
 						<select name="build">
 						  <option >none</option>
 						  {{#each builds}}
-						  	{{#if showSelectedShift.buildID }}
+						  	{{#if matchesSelectedShiftBuildId _id }}
 						  		<option value="{{_id}}" selected>{{name}}</option>
 						  	{{else }}
 						  		<option value="{{_id}}" >{{name}}</option>
@@ -92,3 +90,86 @@
 					<button id="shift_submit">submit</button>
 				</form>
 			</template>
+
+			<template name="ApplicationLayout">
+				{{> navbar}}
+				{{> yield}}
+			</template>
+
+			<template name="navbar">
+				<nav class="navbar navbar-inverse navbar-fixed-top">
+			      <div class="container">
+			        <div class="navbar-header">
+			          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			            <span class="sr-only">Toggle navigation</span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			          </button>
+			          <a class="navbar-brand" href="#">Habitat</a>
+			        </div>
+			        <div id="navbar" class="collapse navbar-collapse">
+			          <ul class="nav navbar-nav">
+			            <li><a href="{{pathFor route='home'}}">Home</a></li>
+			            <li><a href="{{pathFor route='manage'}}">Manage</a></li>
+			            <li><a href="{{pathFor route='volunteer'}}">Volunteer</a></li>
+			          </ul>
+			        </div><!--/.nav-collapse -->
+			      </div>
+			    </nav>
+			</template>
+
+			<template name="home">
+				<h1>Welcome</h1>
+			</template>
+
+			<template name="manage">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-12">
+							<h1>Manage</h1>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-4 col-lg-offset-3">
+							<h2>Shifts</h2>
+							{{> shifts}}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-4 col-lg-offset-3">
+							<h2>Opportunities</h2>
+							{{> builds}}
+						</div>
+					</div>
+				</div>
+			</template>
+
+			<template name="volunteer">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-12">
+							<h1>Volunteer</h1>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-4 col-lg-offset-3">
+							<h2>Shifts</h2>
+							{{> shifts}}
+						</div>
+						<div class="col-lg-3 col-lg-offset-1">
+							<h2>Signing up for:</h2>
+							{{> cart }}
+						</div>
+					</div>
+				</div>
+			</template>
+
+			<template name="cart">
+				{{#each signed_up_shift in signed_up_shifts }}
+					<div class="signed-up-shift">
+						{{ signed_up_shift.name }} | {{ signed_up_shift.time }}
+					</div>
+				{{/each}}
+			</template>
+

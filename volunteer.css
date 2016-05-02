@@ -2,3 +2,10 @@
 .selected-shift, .selected-build {
 	font-weight: 700;
 }
+body {
+	padding-top: 60px;
+}
+
+h1 {
+	text-align: center;
+}
